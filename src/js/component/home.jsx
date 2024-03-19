@@ -1,17 +1,110 @@
+// import React, {useState, useEffect} from "react";
+
+
+
+// //create your first component
+// const Home = () => {
+// 	const styles = {
+// 		xIcon: {
+// 			float: "right",
+// 			color: "red",
+// 		},
+// 	  };
+// 	const [inputValue, setInputValue] = useState("");
+// 	const [toDos, settoDos] = useState([]);
+	
+//     const newUser = () => {
+//         fetch ("https://playground.4geeks.com/apis/fake/todos/user/marta992", {
+//             method: "POST",
+//             body: JSON.stringify([]),
+//             headers: {'Content-Type': "application/json"}
+//     })
+//         .then((response) => response.json())
+//         .then((data) => console.log(data))
+//         .catch((error) => console.log("error"))
+// };
+    
+//     const getList = () => {
+//         fetch("https://playground.4geeks.com/apis/fake/todos/user/marta992", {
+//         method: "GET",
+//         })
+//         .then((response) => {
+//             if (response.status === 404) {
+//                 newUser();
+//                 return [];
+//             }
+//             return response.json();
+//         })
+//         .then((data) => {
+//             settoDos(data);
+//         })
+//         .catch((error) => console.log(error))
+//         };
+
+
+//     const updateToDoList = () => {
+//         fetch ("https://playground.4geeks.com/apis/fake/todos/user/marta992", {
+//             method: "PUT",
+//             body: JSON.stringify(toDos),
+//             headers: {'Content-Type': "application/json"}
+//     })
+//         .then((response) => {
+//             if (response.status === 404) {
+//                 newUser();
+//                 return toDos;
+//             }
+//             return response.json();
+//         })
+//         .then(data => console.log(data))
+//         .catch(error => console.log(error))
+//     };
+
+//      useEffect(() => {
+//          getList();
+//      }, []);
+
+//     // useEffect(() => {
+//     //     if (toDos.length > 0) {
+//     //         updateToDoList();
+//     //     }
+//     // }, [toDos]);
+
+
+// 	return (
+// 		<div className="container">
+// 			<h1> toDos</h1>
+// 			<ul>
+// 				<li> <input 
+//                     type="text" 
+//                     onChange={(e)=> setInputValue(e.target.value)}
+//                     value={inputValue}
+//                     onKeyDown={(e)=>{
+//                         if(e.key=== "Enter" ){
+//                         settoDos(toDos.concat(inputValue));
+// 						setInputValue("")
+//                         }
+//                     }}
+//                     placeholder="What do you need to do?"/> </li>
+// 				{toDos.map((item, index)=> (
+// 				<li>{item}<i className="fas fa-times" style={styles.xIcon}
+// 				onClick={() => settoDos(toDos.filter((t, currentIndex) => index != currentIndex))}  > </i></li>))}
+// 			</ul>
+// 		<div> {toDos.length} item left</div>
+// 		</div>
+// 	);
+// };
+
+// export default Home;
+
+
 import React, { useEffect, useState } from "react";
 
 const Home = () => {
-    const styles = {
-        xIcon: {
-            float:"right",
-            color:"red",
-        },
-    };
     const [inputValue, setInputValue] = useState("");
     const [toDos, settoDos] = useState([]);
-   //  const [hover, setHover] = useState(null);
+    const [hover, setHover] = useState(null);
 
-    function createUser ()  {
+    const newUser = () => {
         fetch('https://playground.4geeks.com/apis/fake/todos/user/marta992', { 
             method:'POST',
             body: JSON.stringify([]),
@@ -22,34 +115,34 @@ const Home = () => {
         .catch((error) => console.log("error"))
     };
 
-    const getToDos = () => {
+    const getList = () => {
         fetch('https://playground.4geeks.com/apis/fake/todos/user/marta992', {
             method:'GET',
         })
         .then((response) => {
             if (response.status === 404) {
-                createUser();
+                newUser();
                 return [];
             }
             return response.json();
         })
         .then((data) => {
-            sethome(data);
+            settoDos(data);
         })
         .catch((error) => console.log(error))
     };
 
-    const putToDos = () => {  
+    const updateList = () => {  
         fetch('https://playground.4geeks.com/apis/fake/todos/user/marta992', {
             method:'PUT',
-            body: JSON.stringify(todoList),
+            body: JSON.stringify(toDos),
             headers:{
                 "Content-Type": "application/json"
             }
         })
         .then((response) => {
             if (response.status === 404) {
-                createUser();
+                newUser();
                 return toDos;
             }
             return response.json();
@@ -58,7 +151,7 @@ const Home = () => {
         .catch(error => console.log(error))
     };
 
-    const deleteToDos = () => {
+    const deleteTask = () => {
         fetch('https://playground.4geeks.com/apis/fake/todos/user/marta992', {
           method: "DELETE",
           headers:{
@@ -77,28 +170,27 @@ const Home = () => {
         }
     };
 
-    //METIENDO EL XICON PUEDE SER QUE NO ME SEA NECESARIO METER EL ONDELETEICON
-    // const onDeleteIconClick = (elem, index) => {
-    //     if (toDos.length === 1) {
-    //         deleteToDos();
-    //     } else {
-    //         settoDos(toDos.filter((elem, i) => index !== i));
-    //     }
-    // };
+    const onDeleteIconClick = (elem, index) => {
+        if (toDos.length === 1) {
+            deleteTask();
+        } else {
+            settoDos(toDos.filter((elem, i) => index !== i));
+        }
+    };
 
     useEffect(() => {
-        getToDos();
+        getList();
     }, []);
 
     useEffect(() => {
         if (toDos.length > 0) {
-            putToDos();
+            updateList();
         }
     }, [toDos]);
 
     return (
-        <div className="container">
-            <h1> toDos </h1>
+        <div className="principal">
+            <p className="fw-lighter">todos</p>
             <div className="tarjeta">
                 <input
                     type="text"
@@ -108,10 +200,6 @@ const Home = () => {
                     value={inputValue}
                 />
 
-                {toDos.map((item, index)=> (
-	 			<li>{item}<i className="fas fa-times" style={styles.xIcon}
-	 			onClick={() => settoDos(toDos.filter((t, currentIndex) => index != currentIndex))}  > </i></li>))}
-{/* 
                 <ul>
                     {toDos.length > 0 ? toDos.map((elem, index) => (
                         <li 
@@ -127,10 +215,10 @@ const Home = () => {
                     )) : (
                         <li className="agregarTarea">No hay tareas, añadir tareas</li>
                     )}
-                </ul>     */}
+                </ul>    
                 <div className="contador">{toDos.length} item left</div>
                 {toDos.length > 0 && (
-                    <button className="btn btn-danger m-2" onClick={deleteToDos}>Clean All Tasks</button>
+                    <button className="btn btn-danger m-2" onClick={deleteTask}>Eliminar tareas</button>
                 )}
             </div>
             <div className="tarjeta2"></div>

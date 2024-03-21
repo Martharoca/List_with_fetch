@@ -32,16 +32,17 @@ const Home = () => {
 			.catch(error => console.log(error))
 	}
 
-    function updateList() {
+    function updateList(newToDos) {
 		fetch('https://playground.4geeks.com/apis/fake/todos/user/marta92',{
 			method: "PUT",
 			headers: {	
 				"Content-Type":"application/json"
 		},
-		body: JSON.stringify(toDos)
+		body: JSON.stringify(newToDos)
 		})
 		.then((respuesta) => respuesta.json())
-		.then((data) => settoDos(data))
+		.then((data) => getList()) /* al finalizar el update de mi lista, llamo a mi función getList() para que de forma dinámica se actualice mi lista de tareas de 
+        manera local con lo que hay en la API   */
 		.catch(error => console.log(error))
 	}
 
@@ -61,16 +62,17 @@ const Home = () => {
                 value={inputValue}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                        settoDos(toDos.concat({label: inputValue, done: false}));
+                        const newToDos = toDos.concat({label: inputValue, done: false}); // creo la variable donde guardo mi lista de newToDos
                         setInputValue("");
-                       // updateList();
+                       updateList(newToDos); // aqui envio la lista actualizada como param a la funcion de updateList
+                       getList() // aqui llamo a getList() para actualizar LOCALMENTE mi lista de toDos basado en lo que hay ahora en la API
                     }
                 }}
                 placeholder="What do you need to do? "/> </li>
                 {toDos.map((item,index) => (
                     <li> {item.label}  
                     <i className="fas fa-times" style= {styles.xIcon}
-                    onClick={() => settoDos(toDos.filter((t, currentindex) => index != currentindex))} ></i>
+                    onClick={() => updateList(toDos.filter((t, currentindex) => index != currentindex))} ></i>
                     </li>
                 ))}
             </ul>
